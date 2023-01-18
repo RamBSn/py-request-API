@@ -25,9 +25,13 @@ def send_mail(message):
         server.login(username, password)
         server.sendmail(username, receiver, message)
 
-
-url = "https://newsapi.org/v2/everything?q=Microsoft&from=2023-01-01&" \
-      "sortBy=publishedAt&apiKey=62c8b135c28245f4b790b9d2f5112cc7"
+topic = 'Microsoft'
+url = "https://newsapi.org/v2/everything?" \
+      f"q={topic}&" \
+      "from=2023-01-01&" \
+      "sortBy=publishedAt&" \
+      "apiKey=62c8b135c28245f4b790b9d2f5112cc7&" \
+      "language=en"
 newsapi_key = "62c8b135c28245f4b790b9d2f5112cc7"
 request = rq.get(url)
 request_data = request.json()
@@ -35,8 +39,9 @@ print(request_data)
 
 message = ''
 # print(json.dumps(request_data, indent=4) )
-for article in request_data["articles"]:
+for article in request_data["articles"][:20]:
     message += article['title'] + '\n' + f'Source: {article["source"]["Name"]}' + '\n' + article['url'] + 2*'\n'
 
-message = "Subject: Python news email\n" + message
-send_mail(message.encode('utf-8').strip())
+message = "Subject: Python: Microsoft news email\n" + message
+message = message.encode('utf-8').strip()
+send_mail(message)
